@@ -21,7 +21,15 @@ object ParkingRecordValidator {
         val exitTime: String
     )
 
-    fun validate(input: Input): Result<ValidatedInput> = runCatching {
+    fun validateForCreate(input: Input): Result<ValidatedInput> = runCatching {
+        validateBase(input, requireExit = false)
+    }
+
+    fun validateForCheckout(input: Input): Result<ValidatedInput> = runCatching {
+        validateBase(input, requireExit = true)
+    }
+
+    private fun validateBase(input: Input, requireExit: Boolean): ValidatedInput {
         val plate = input.plate.trim().uppercase()
         require(PLATE_PATTERN.matches(plate)) {
             "Plate must contain 5 to 10 letters, numbers or hyphens"
@@ -40,11 +48,17 @@ object ParkingRecordValidator {
         require(DATE_PATTERN.matches(date)) { "Date must use YYYY-MM-DD" }
 
         val entryTime = input.entryTime.trim()
-        val exitTime = input.exitTime.trim()
         ParkingFeeCalculator.parseMinutes(entryTime)
-        ParkingFeeCalculator.parseMinutes(exitTime)
 
-        ValidatedInput(
+        val exitTime = input.exitTime.trim()
+        if (requireExit) {
+            require(exitTime.isNotEmpty()) { "Exit time is required" }
+            ParkingFeeCalculator.parseMinutes(exitTime)
+        } else if (exitTime.isNotEmpty()) {
+            ParkingFeeCalculator.parseMinutes(exitTime)
+        }
+
+        return ValidatedInput(
             plate = plate,
             model = model,
             year = year,
