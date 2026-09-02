@@ -6,10 +6,11 @@ This repository is currently in an **open-source revival** phase. Contributions 
 
 ## Before contributing
 
-1. Read [`README.md`](./README.md) and [`ROADMAP.md`](./ROADMAP.md).
+1. Read [`README.md`](./README.md), [`ROADMAP.md`](./ROADMAP.md) and [`DEVELOPMENT.md`](./DEVELOPMENT.md).
 2. Check whether the proposed change belongs to the current modernization phase.
 3. Avoid bundling unrelated refactors and product features in the same pull request.
-4. Never commit production credentials, API keys, personal data, customer data or private backend URLs.
+4. Never commit production credentials, API keys, signing material, personal data, customer data or private backend URLs.
+5. Run the local verification command documented in `DEVELOPMENT.md` before opening a pull request when the change affects buildable Android code.
 
 ## Development principles
 
@@ -32,6 +33,7 @@ A good pull request should include:
 - screenshots for UI changes using only synthetic/demo data
 - migration/compatibility notes for architectural changes
 - no unsupported claims such as “production-ready” unless the repository evidence supports them
+- the actual verification performed; do not mark checks as passing if they were not run
 
 ## Commit scope examples
 
@@ -46,7 +48,11 @@ chore(ci): add Android build quality gate
 
 ## Security issues
 
-Do not open a public issue containing a real credential or exploitable private-system detail. A dedicated security reporting policy will be added during Phase 0 of the roadmap.
+Do not open a public issue containing a real credential, personal data, private infrastructure detail or exploitable vulnerability. Follow [`SECURITY.md`](./SECURITY.md) for coordinated reporting.
+
+## Conduct
+
+Participation in project spaces is governed by [`CODE_OF_CONDUCT.md`](./CODE_OF_CONDUCT.md).
 
 ## Licensing
 
