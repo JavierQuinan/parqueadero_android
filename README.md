@@ -47,7 +47,6 @@ The current code is **not yet production-ready**. The modernization backlog inte
 - no environment/flavor strategy
 - limited automated test evidence
 - generic activity names
-- first CI workflow configured; first green-run evidence is tracked in Phase 0
 
 ## Target architecture
 
@@ -110,13 +109,13 @@ The scope will be delivered incrementally. Features are **roadmap items, not cur
 
 See [`DEVELOPMENT.md`](./DEVELOPMENT.md) for the exact toolchain and local verification command. The baseline uses JDK 17, Gradle Wrapper 8.2, Android Gradle Plugin 8.2.2 and Android SDK 34.
 
-The repository also defines an Android CI workflow that runs:
+The repository defines an Android CI workflow that runs:
 
 ```text
 lintDebug + testDebugUnitTest + assembleDebug
 ```
 
-CI results are treated as evidence only after the corresponding workflow run completes successfully.
+The first Phase 0 workflow execution completed successfully. Future CI/test results are still treated as evidence only after the corresponding run completes successfully.
 
 ## Modernization roadmap
 
