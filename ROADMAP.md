@@ -19,9 +19,9 @@ This roadmap turns the existing Kotlin prototype into a professional, maintainab
 - [x] Add Dependabot strategy
 - [x] Document baseline build requirements
 - [x] Establish first GitHub Actions workflow (`lintDebug + testDebugUnitTest + assembleDebug`)
-- [ ] Verify first green CI run
+- [x] Verify first green CI run
 
-**Exit gate:** clean repository + reproducible local build + first green CI run.
+**Exit gate:** complete — clean repository + reproducible local build + first green CI run verified.
 
 ---
 
