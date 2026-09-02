@@ -5,7 +5,6 @@ import android.content.Intent
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
-import android.util.Log
 import android.widget.Button
 import android.widget.EditText
 import android.widget.Toast
@@ -13,14 +12,13 @@ import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
-import com.android.volley.Request
-import com.android.volley.toolbox.JsonObjectRequest
-import com.android.volley.toolbox.Volley
-import io.github.javierquinan.parking.core.network.ApiConfig
-import org.json.JSONException
-import org.json.JSONObject
+import io.github.javierquinan.parking.core.network.ApiResult
+import io.github.javierquinan.parking.data.remote.LegacyParkingApiClient
+import io.github.javierquinan.parking.data.remote.model.LoginRequest
 
 class LoginActivity : AppCompatActivity() {
+    private val apiClient by lazy { LegacyParkingApiClient(this) }
+
     @SuppressLint("MissingInflatedId")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -47,75 +45,56 @@ class LoginActivity : AppCompatActivity() {
     }
 
     private fun login(username: String, password: String) {
-        val url = ApiConfig.endpointOrNull() ?: run {
-            Toast.makeText(
-                this,
-                "El endpoint de la API no está configurado.",
-                Toast.LENGTH_LONG
-            ).show()
-            return
-        }
-
-        val payload = JSONObject().apply {
-            put("accion", "consultarDato")
-            put("usuario", username)
-            put("clave", password)
-        }
-
-        val requestQueue = Volley.newRequestQueue(this)
-        val request = JsonObjectRequest(
-            Request.Method.POST,
-            url,
-            payload,
-            { response ->
-                try {
-                    val authenticated = response.getString("estado").toInt() == 1
-                    if (authenticated) {
+        apiClient.login(LoginRequest(username, password)) { result ->
+            when (result) {
+                is ApiResult.Success -> {
+                    if (result.value.authenticated) {
                         resetFailedAttempts()
+                        val personId = result.value.personId
+                        if (personId == null) {
+                            Toast.makeText(
+                                this,
+                                "La respuesta de autenticación no contiene el identificador esperado.",
+                                Toast.LENGTH_LONG
+                            ).show()
+                            return@login
+                        }
+
                         val intent = Intent(this, ParkingManagementActivity::class.java).apply {
-                            putExtra("idPersona", response.getInt("cod_persona"))
+                            putExtra("idPersona", personId)
                         }
                         startActivity(intent)
                         finish()
                     } else {
-                        incrementFailedAttempts()
-                        val attempts = getFailedAttempts()
-
-                        if (attempts >= MAX_FAILED_ATTEMPTS) {
-                            Toast.makeText(
-                                applicationContext,
-                                "Cuenta bloqueada por múltiples intentos fallidos. Contacta al administrador.",
-                                Toast.LENGTH_LONG
-                            ).show()
-                            temporarilyDisableLogin()
-                        } else {
-                            Toast.makeText(
-                                applicationContext,
-                                "Intento fallido $attempts de $MAX_FAILED_ATTEMPTS. Verifica tus credenciales.",
-                                Toast.LENGTH_SHORT
-                            ).show()
-                        }
+                        handleRejectedLogin()
                     }
-                } catch (exception: JSONException) {
-                    Toast.makeText(
-                        applicationContext,
-                        "Error en los datos recibidos.",
-                        Toast.LENGTH_LONG
-                    ).show()
-                    Log.d("LoginError", "JSONException: ${exception.message}")
                 }
-            },
-            { error ->
-                Toast.makeText(
-                    applicationContext,
-                    "Error en la solicitud: ${error.message}",
-                    Toast.LENGTH_LONG
-                ).show()
-                Log.d("LoginError", "VolleyError: ${error.message}")
-            }
-        )
 
-        requestQueue.add(request)
+                is ApiResult.Failure -> {
+                    Toast.makeText(this, result.error.userMessage, Toast.LENGTH_LONG).show()
+                }
+            }
+        }
+    }
+
+    private fun handleRejectedLogin() {
+        incrementFailedAttempts()
+        val attempts = getFailedAttempts()
+
+        if (attempts >= MAX_FAILED_ATTEMPTS) {
+            Toast.makeText(
+                applicationContext,
+                "Cuenta bloqueada por múltiples intentos fallidos. Contacta al administrador.",
+                Toast.LENGTH_LONG
+            ).show()
+            temporarilyDisableLogin()
+        } else {
+            Toast.makeText(
+                applicationContext,
+                "Intento fallido $attempts de $MAX_FAILED_ATTEMPTS. Verifica tus credenciales.",
+                Toast.LENGTH_SHORT
+            ).show()
+        }
     }
 
     private fun incrementFailedAttempts() {
