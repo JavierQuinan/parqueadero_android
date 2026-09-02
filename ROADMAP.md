@@ -29,18 +29,18 @@ This roadmap turns the existing Kotlin prototype into a professional, maintainab
 
 **Goal:** remove prototype-only technical assumptions.
 
-- [ ] Rename namespace/applicationId from `com.example.parcial` to `io.github.javierquinan.parking`
-- [ ] Rename generic Activities/features using domain terminology
-- [ ] Remove hardcoded `http://10.0.2.2/Parcial/auto.php` from application code
-- [ ] Introduce environment-aware API base URL configuration
-- [ ] Disable broad cleartext traffic
-- [ ] Add Android Network Security Configuration only for explicit development cases if required
+- [x] Rename namespace/applicationId from `com.example.parcial` to `io.github.javierquinan.parking`
+- [x] Rename generic Activities/features using domain terminology
+- [x] Remove hardcoded `http://10.0.2.2/Parcial/auto.php` from application code
+- [x] Introduce environment-aware API base URL configuration
+- [x] Disable broad cleartext traffic
+- [x] Add Android Network Security Configuration only for explicit development cases
 - [ ] Define typed API request/response models
 - [ ] Centralize errors and API result handling
 - [ ] Add input validation for plate, dates and times
-- [ ] Document local/demo backend strategy
+- [x] Document local/demo backend strategy
 
-**Exit gate:** no hardcoded runtime endpoint in UI code; secure configuration boundary documented and tested.
+**Exit gate:** pending typed contracts, centralized error handling and input validation. Identity/configuration/network boundary is implemented and must remain CI-verified.
 
 ---
 

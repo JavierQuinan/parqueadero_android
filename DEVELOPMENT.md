@@ -22,6 +22,21 @@ Install JDK 17 and Android SDK Platform 34. Android Studio can generate `local.p
 
 No production credential, signing key or private backend configuration is required to compile the current debug application.
 
+## API configuration
+
+Runtime networking is configured through `PARKING_API_BASE_URL`.
+
+The Android build reads it from either:
+
+- Gradle property `-PPARKING_API_BASE_URL=...`
+- environment variable `PARKING_API_BASE_URL`
+
+Debug builds retain a local emulator fallback (`http://10.0.2.2/Parcial/`) so the historical prototype can still be exercised locally. Release builds have no default endpoint and must be explicitly configured before network-backed runtime use.
+
+The main manifest disables cleartext traffic. A debug-only Network Security Configuration permits HTTP only to emulator host `10.0.2.2`.
+
+See [`docs/LOCAL_BACKEND.md`](./docs/LOCAL_BACKEND.md) for the legacy action contract and local/demo strategy.
+
 ## Verification commands
 
 Linux/macOS:
@@ -38,9 +53,11 @@ gradlew.bat --no-daemon lintDebug testDebugUnitTest assembleDebug
 
 Expected outputs include Android Lint results, unit-test results and the debug APK generated under the Gradle build directories.
 
-## Runtime note
+To override the debug API base URL explicitly:
 
-The historical prototype still references a local cleartext development endpoint. That endpoint is technical debt tracked in Phase 1 and is not required for compilation. Network-backed runtime behavior will not work unless an equivalent local/demo backend is available.
+```bash
+./gradlew -PPARKING_API_BASE_URL=http://10.0.2.2/Parcial/ assembleDebug
+```
 
 ## Before opening a pull request
 

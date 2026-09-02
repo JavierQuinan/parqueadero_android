@@ -21,6 +21,9 @@ The project is now being deliberately revived as an **open-source Android engine
 - JUnit 4 and Espresso dependencies
 - Gradle Kotlin DSL
 - Gradle root project identity: `ParkingAndroid`
+- namespace/application id: `io.github.javierquinan.parking`
+- environment-aware API base URL configuration
+- release cleartext traffic disabled
 
 ## Current implemented behavior
 
@@ -38,15 +41,13 @@ The existing prototype includes:
 
 The current code is **not yet production-ready**. The modernization backlog intentionally documents the existing debt:
 
-- default package/application id `com.example.parcial`
-- networking and UI/domain logic concentrated in Activities
-- local cleartext endpoint (`http://10.0.2.2/...`) used by the original prototype
-- legacy Volley-oriented networking without typed API contracts
+- networking and UI/domain logic are still concentrated in Activities
+- legacy Volley/JSONObject transport without typed API contracts
 - no dependency-injection strategy
 - no persistence/offline architecture
-- no environment/flavor strategy
 - limited automated test evidence
-- generic activity names
+- plate/date/time validation is still incomplete
+- production/release API endpoint must be supplied explicitly
 
 ## Target architecture
 
@@ -115,7 +116,18 @@ The repository defines an Android CI workflow that runs:
 lintDebug + testDebugUnitTest + assembleDebug
 ```
 
-The first Phase 0 workflow execution completed successfully. Future CI/test results are still treated as evidence only after the corresponding run completes successfully.
+The Phase 0 workflow baseline completed successfully. Future CI/test results are still treated as evidence only after the corresponding run completes successfully.
+
+## Network configuration
+
+Runtime networking no longer depends on a URL embedded in Activities. The base URL is injected through `PARKING_API_BASE_URL` and resolved by a dedicated configuration boundary.
+
+- debug builds retain an emulator-only local fallback
+- the main/release manifest disables broad cleartext traffic
+- the debug Network Security Configuration permits HTTP only to `10.0.2.2`
+- release builds have no default API endpoint
+
+See [`docs/LOCAL_BACKEND.md`](./docs/LOCAL_BACKEND.md) for the currently evidenced legacy action contract and local/demo setup.
 
 ## Modernization roadmap
 
@@ -135,7 +147,7 @@ Project policies:
 
 ## Evidence policy
 
-This repository follows the same evidence-first rule used across my professional portfolio:
+This repository follows an evidence-first rule:
 
 - implemented features are separated from planned features
 - CI/test results are only claimed after they run successfully
