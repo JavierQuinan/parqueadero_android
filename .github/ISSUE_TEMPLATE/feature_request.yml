@@ -1,0 +1,58 @@
+name: Feature request
+description: Propose a scoped improvement aligned with the modernization roadmap
+title: "feat: "
+body:
+  - type: textarea
+    id: problem
+    attributes:
+      label: Problem to solve
+      description: Describe the user, operator or engineering problem before proposing implementation details.
+    validations:
+      required: true
+
+  - type: textarea
+    id: outcome
+    attributes:
+      label: Desired outcome
+      description: Describe the observable behavior or engineering result.
+    validations:
+      required: true
+
+  - type: dropdown
+    id: phase
+    attributes:
+      label: Roadmap area
+      options:
+        - Phase 0 — Repository baseline
+        - Phase 1 — Identity, configuration and network security
+        - Phase 2 — Kotlin architecture modernization
+        - Phase 3 — Modern UI / UX
+        - Phase 4 — Offline-first data layer
+        - Phase 5 — Parking domain evolution
+        - Phase 6 — Location, notifications and platform capabilities
+        - Phase 7 — Quality engineering
+        - Phase 8 — Security and privacy hardening
+        - Phase 9 — Backend/API contract
+        - Phase 10 — Release readiness
+        - Cross-cutting / needs triage
+    validations:
+      required: true
+
+  - type: textarea
+    id: proposal
+    attributes:
+      label: Proposed approach
+      description: Architecture, API, UI or migration approach if already known.
+
+  - type: textarea
+    id: alternatives
+    attributes:
+      label: Alternatives considered
+
+  - type: checkboxes
+    id: evidence
+    attributes:
+      label: Evidence policy
+      options:
+        - label: I understand that roadmap proposals are not treated as implemented features until source/tests/CI provide evidence.
+          required: true
