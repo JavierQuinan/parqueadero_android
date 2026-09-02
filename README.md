@@ -47,7 +47,7 @@ The current code is **not yet production-ready**. The modernization backlog inte
 - no environment/flavor strategy
 - limited automated test evidence
 - generic activity names
-- no CI quality gate yet
+- first CI workflow configured; first green-run evidence is tracked in Phase 0
 
 ## Target architecture
 
@@ -106,15 +106,33 @@ The long-term open-source project is intended to become a reusable parking-manag
 
 The scope will be delivered incrementally. Features are **roadmap items, not current claims**.
 
+## Development baseline
+
+See [`DEVELOPMENT.md`](./DEVELOPMENT.md) for the exact toolchain and local verification command. The baseline uses JDK 17, Gradle Wrapper 8.2, Android Gradle Plugin 8.2.2 and Android SDK 34.
+
+The repository also defines an Android CI workflow that runs:
+
+```text
+lintDebug + testDebugUnitTest + assembleDebug
+```
+
+CI results are treated as evidence only after the corresponding workflow run completes successfully.
+
 ## Modernization roadmap
 
 See [`ROADMAP.md`](./ROADMAP.md) for the phased plan from legacy prototype to a maintainable open-source Android application.
 
-## Open source
+## Open-source governance
 
-This project is being prepared as a community-friendly open-source project under the **Apache License 2.0**.
+This project is licensed under the **Apache License 2.0**.
 
-Contributions will be accepted once the baseline modernization phase is complete. See [`CONTRIBUTING.md`](./CONTRIBUTING.md).
+Project policies:
+
+- [`CONTRIBUTING.md`](./CONTRIBUTING.md) — contribution workflow
+- [`SECURITY.md`](./SECURITY.md) — vulnerability reporting and coordinated disclosure
+- [`CODE_OF_CONDUCT.md`](./CODE_OF_CONDUCT.md) — participation rules
+- structured GitHub issue and pull-request templates
+- Dependabot configuration for Gradle and GitHub Actions dependencies
 
 ## Evidence policy
 
