@@ -20,6 +20,7 @@ The project is now being deliberately revived as an **open-source Android engine
 - Volley HTTP client
 - JUnit 4 and Espresso dependencies
 - Gradle Kotlin DSL
+- Gradle root project identity: `ParkingAndroid`
 
 ## Current implemented behavior
 
@@ -46,7 +47,6 @@ The current code is **not yet production-ready**. The modernization backlog inte
 - no environment/flavor strategy
 - limited automated test evidence
 - generic activity names
-- IDE metadata currently versioned
 - no CI quality gate yet
 
 ## Target architecture

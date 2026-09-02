@@ -10,8 +10,9 @@ This roadmap turns the existing Kotlin prototype into a professional, maintainab
 - [x] Publish modernization roadmap
 - [x] Add Apache-2.0 license
 - [x] Add contribution policy
-- [ ] Remove tracked IDE-only metadata (`.idea/`)
-- [ ] Harden `.gitignore`
+- [x] Remove tracked IDE-only metadata (`.idea/`)
+- [x] Harden `.gitignore`
+- [x] Align Gradle root project identity to `ParkingAndroid`
 - [ ] Add SECURITY.md
 - [ ] Add Code of Conduct
 - [ ] Add issue/PR templates
