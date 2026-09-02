@@ -1,0 +1,70 @@
+name: Bug report
+description: Report reproducible incorrect behavior in the Android project
+title: "bug: "
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Provide reproducible technical evidence. Do not include credentials, personal data, private backend URLs or real customer/vehicle information.
+
+  - type: textarea
+    id: description
+    attributes:
+      label: Problem
+      description: Describe the incorrect behavior and affected flow.
+      placeholder: What happened?
+    validations:
+      required: true
+
+  - type: textarea
+    id: reproduction
+    attributes:
+      label: Reproduction steps
+      description: Provide the smallest deterministic sequence that reproduces the issue.
+      placeholder: |
+        1. Open ...
+        2. Enter synthetic data ...
+        3. Observe ...
+    validations:
+      required: true
+
+  - type: textarea
+    id: expected
+    attributes:
+      label: Expected behavior
+    validations:
+      required: true
+
+  - type: textarea
+    id: actual
+    attributes:
+      label: Actual behavior
+    validations:
+      required: true
+
+  - type: input
+    id: commit
+    attributes:
+      label: Commit / branch
+      placeholder: main @ <sha>
+
+  - type: input
+    id: environment
+    attributes:
+      label: Android environment
+      placeholder: Android version, device/emulator, Android Studio/JDK if relevant
+
+  - type: textarea
+    id: evidence
+    attributes:
+      label: Logs or evidence
+      description: Use sanitized logs and synthetic screenshots only.
+      render: shell
+
+  - type: checkboxes
+    id: security
+    attributes:
+      label: Public disclosure check
+      options:
+        - label: This report does not contain credentials, personal data, private infrastructure details or an undisclosed vulnerability.
+          required: true
