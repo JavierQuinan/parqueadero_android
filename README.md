@@ -1,42 +1,136 @@
-# Parking Android Prototype
+# Parking Android — Open Source Revival
 
-> **Repository status:** learning / historical prototype. This repository is kept as technical evidence of native Android work and is **not presented as a production-ready or featured portfolio project**.
+> **Status:** active open-source revival  
+> **Current maturity:** legacy Android/Kotlin prototype under structured modernization  
+> **Portfolio role:** native Android / Kotlin evidence in progress
 
-## Purpose
+## Overview
 
-Native Android prototype used to explore a parking-management application flow and Android client development.
+This repository contains a native Android parking-management prototype written in **Kotlin**. The current application already demonstrates a basic operational flow: vehicle registration, listing/querying vehicles, entry/exit data, remote HTTP requests through Volley and a simple parking-rate calculation.
 
-## Verified technical stack
+The project is now being deliberately revived as an **open-source Android engineering project**. The objective is not to hide the original academic/prototype state, but to evolve it in public through documented architectural, security, testing and UX milestones.
 
-- Kotlin / Android
+## Current verified stack
+
+- Kotlin / native Android
 - Android SDK 34 (`minSdk 24`, `targetSdk 34`)
 - AndroidX Core KTX and AppCompat
 - Material Components
 - ConstraintLayout
-- Volley for HTTP networking
-- JUnit and Espresso dependencies for testing
+- Volley HTTP client
+- JUnit 4 and Espresso dependencies
+- Gradle Kotlin DSL
 
-## Current technical debt
+## Current implemented behavior
 
-The repository intentionally remains classified as a prototype because the current codebase still contains implementation details that should be redesigned before any professional showcase or production use:
+The existing prototype includes:
 
-- default/example application namespace (`com.example.parcial`)
+- vehicle/parking record creation
+- vehicle list/query flow
+- record detail retrieval
+- record update flow
+- entry and exit time handling
+- basic hourly parking-rate calculation
+- Android client → HTTP endpoint communication
+
+## Known technical debt
+
+The current code is **not yet production-ready**. The modernization backlog intentionally documents the existing debt:
+
+- default package/application id `com.example.parcial`
+- networking and UI/domain logic concentrated in Activities
+- local cleartext endpoint (`http://10.0.2.2/...`) used by the original prototype
+- legacy Volley-oriented networking without typed API contracts
+- no dependency-injection strategy
+- no persistence/offline architecture
+- no environment/flavor strategy
+- limited automated test evidence
 - generic activity names
-- `android:usesCleartextTraffic="true"`
-- no documented architecture or environment strategy
-- limited automated-test evidence
+- IDE metadata currently versioned
+- no CI quality gate yet
 
-These limitations are documented instead of being hidden or overstated.
+## Target architecture
 
-## If this project is revived
+The target open-source version will evolve toward:
 
-A professional rework should include a domain-specific package name, HTTPS-only networking, environment configuration, ViewModel-based state management, repository/data layers, structured API client handling, improved test coverage and CI validation.
+```text
+Android App (Kotlin)
+│
+├── presentation/
+│   ├── Compose / Material 3
+│   ├── ViewModels
+│   └── StateFlow
+│
+├── domain/
+│   ├── models
+│   ├── use cases
+│   └── repository contracts
+│
+├── data/
+│   ├── remote/     → Retrofit / OkHttp
+│   ├── local/      → Room
+│   └── repository/
+│
+├── core/
+│   ├── network
+│   ├── security
+│   ├── result/error model
+│   └── configuration
+│
+└── tests/
+    ├── unit
+    ├── integration
+    └── UI
+```
+
+Planned engineering direction:
+
+`Kotlin` · `Jetpack Compose` · `Material 3` · `MVVM/Clean Architecture` · `Coroutines` · `Flow/StateFlow` · `Hilt` · `Retrofit` · `OkHttp` · `Room` · `DataStore` · `Navigation` · `WorkManager` · `JUnit` · `MockK` · `Compose UI Tests` · `GitHub Actions`
+
+## Product vision
+
+The long-term open-source project is intended to become a reusable parking-management client capable of supporting:
+
+- parking-space availability
+- vehicle check-in / check-out
+- configurable rate rules
+- duration and fee calculation
+- reservations
+- QR-based ticket/check-in flows
+- receipts/history
+- offline-first operation
+- role-aware operator workflows
+- maps/location integration where appropriate
+- notifications
+- a documented backend/API contract
+
+The scope will be delivered incrementally. Features are **roadmap items, not current claims**.
+
+## Modernization roadmap
+
+See [`ROADMAP.md`](./ROADMAP.md) for the phased plan from legacy prototype to a maintainable open-source Android application.
+
+## Open source
+
+This project is being prepared as a community-friendly open-source project under the **Apache License 2.0**.
+
+Contributions will be accepted once the baseline modernization phase is complete. See [`CONTRIBUTING.md`](./CONTRIBUTING.md).
+
+## Evidence policy
+
+This repository follows the same evidence-first rule used across my professional portfolio:
+
+- implemented features are separated from planned features
+- CI/test results are only claimed after they run successfully
+- no production credentials or customer data are committed
+- architecture changes are documented through pull requests
+- security debt is documented instead of hidden
 
 ## Portfolio classification
 
-**Category:** Android / Kotlin learning evidence  
-**Visibility:** Public  
-**Portfolio priority:** Low  
-**Recommended use:** Historical evidence, not a pinned repository
+**Category:** Native Android / Kotlin  
+**Visibility:** Public / Open Source  
+**Current priority:** Active revival  
+**Target priority:** Portfolio evidence after Phase 2 quality gate
 
-For current professional work and selected engineering projects, see the main [GitHub profile](https://github.com/JavierQuinan).
+For broader engineering work, see my [GitHub profile](https://github.com/JavierQuinan).
