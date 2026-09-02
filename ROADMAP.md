@@ -13,12 +13,13 @@ This roadmap turns the existing Kotlin prototype into a professional, maintainab
 - [x] Remove tracked IDE-only metadata (`.idea/`)
 - [x] Harden `.gitignore`
 - [x] Align Gradle root project identity to `ParkingAndroid`
-- [ ] Add SECURITY.md
-- [ ] Add Code of Conduct
-- [ ] Add issue/PR templates
-- [ ] Add Dependabot/Renovate strategy
-- [ ] Document baseline build requirements
-- [ ] Establish first GitHub Actions workflow (`lint + unit test + assembleDebug`)
+- [x] Add `SECURITY.md`
+- [x] Add Code of Conduct
+- [x] Add issue/PR templates
+- [x] Add Dependabot strategy
+- [x] Document baseline build requirements
+- [x] Establish first GitHub Actions workflow (`lintDebug + testDebugUnitTest + assembleDebug`)
+- [ ] Verify first green CI run
 
 **Exit gate:** clean repository + reproducible local build + first green CI run.
 
@@ -173,7 +174,7 @@ feature/
 - [ ] least-privilege permissions
 - [ ] dependency scanning
 - [ ] secret scanning
-- [ ] security reporting policy
+- [x] security reporting policy
 - [ ] threat model for operator/user flows
 - [ ] privacy notes for location/vehicle identifiers
 
