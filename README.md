@@ -132,6 +132,18 @@ The CI log confirms the unit-test task passed; it is not presented as a fabricat
 
 See [`ENGINEERING_EVIDENCE.md`](./ENGINEERING_EVIDENCE.md) for the current evidence inventory and [`DEVELOPMENT.md`](./DEVELOPMENT.md) for reproducible local commands.
 
+## Product & engineering roadmap
+
+The project intentionally keeps an ambitious future direction in [`ROADMAP.md`](./ROADMAP.md).
+
+The roadmap uses a strict status model:
+
+- ✅ implemented and evidenced;
+- 🔄 active engineering direction;
+- 🧭 strategic evolution / possible future capability.
+
+This keeps architecture/product vision visible without turning future ideas into present-tense portfolio claims.
+
 ## Open-source governance
 
 The project includes:
@@ -156,7 +168,7 @@ This repository does **not** claim:
 - authentication/authorization infrastructure;
 - a production-approved parking pricing policy.
 
-The remaining Activity-level Volley/JSON transport is documented as part of the current legacy boundary rather than hidden or described as future work.
+Those capabilities may appear in the roadmap as possible evolution, but they remain clearly separated from current evidence until implemented.
 
 ## Portfolio classification
 
@@ -166,6 +178,6 @@ The remaining Activity-level Volley/JSON transport is documented as part of the 
 
 ## Resumen en español
 
-Aplicación Android nativa en **Kotlin** con flujo de registro/consulta/salida de vehículos, configuración de API por entorno, política de red diferenciada entre debug y release, cálculo de tarifa extraído a Kotlin puro y validación separada para ingreso/salida. GitHub Actions ejecutó correctamente `testDebugUnitTest`, `assembleDebug` y `lintDebug`; actualmente hay 14 métodos de prueba unitarios versionados. La documentación distingue claramente el código implementado de capacidades que no existen en el repositorio.
+Aplicación Android nativa en **Kotlin** con flujo de registro/consulta/salida de vehículos, configuración de API por entorno, política de red diferenciada entre debug y release, cálculo de tarifa extraído a Kotlin puro y validación separada para ingreso/salida. GitHub Actions ejecutó correctamente `testDebugUnitTest`, `assembleDebug` y `lintDebug`; actualmente hay 14 métodos de prueba unitarios versionados. El roadmap conserva la visión de evolución del producto, pero diferencia explícitamente lo implementado de las capacidades futuras.
 
 For broader engineering work, see my [GitHub profile](https://github.com/JavierQuinan).
