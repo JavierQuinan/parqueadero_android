@@ -1,6 +1,6 @@
 # Parking Android — Kotlin Open Source
 
-> **Portfolio evidence:** native Android / Kotlin · parking CRUD flow · environment-aware networking · pure Kotlin domain rules · automated Android quality gate.
+> **Portfolio evidence:** native Android / Kotlin · parking CRUD flow · environment-aware networking · pure Kotlin domain rules · observed Android CI quality gate.
 >
 > This repository is an open-source engineering artifact. It demonstrates the implementation that exists today and does not advertise unbuilt product features.
 
@@ -107,21 +107,30 @@ Security boundary:
 
 See [`docs/LOCAL_BACKEND.md`](./docs/LOCAL_BACKEND.md) for the legacy action contract actually present in the source.
 
-## Quality gate
+## Observed quality evidence
 
-GitHub Actions runs the same reproducible Android verification command documented in [`DEVELOPMENT.md`](./DEVELOPMENT.md):
+GitHub Actions executed the repository verification command successfully on this hardening change:
 
 ```bash
 ./gradlew --no-daemon lintDebug testDebugUnitTest assembleDebug
 ```
 
-The repository contains unit-test source for:
+Observed CI result:
 
-- API endpoint resolution;
-- parking-fee parsing/calculation/error cases;
-- check-in vs. checkout validation and input normalization.
+- `testDebugUnitTest` — PASS;
+- `assembleDebug` — PASS;
+- `lintDebug` — PASS;
+- overall Gradle build — `BUILD SUCCESSFUL`.
 
-See [`ENGINEERING_EVIDENCE.md`](./ENGINEERING_EVIDENCE.md) for the current evidence inventory.
+The repository currently versions **14 unit-test methods** across:
+
+- `ApiConfigTest`;
+- `ParkingFeeCalculatorTest`;
+- `ParkingRecordValidatorTest`.
+
+The CI log confirms the unit-test task passed; it is not presented as a fabricated `14/14` count because Gradle did not print that aggregate count in the job log.
+
+See [`ENGINEERING_EVIDENCE.md`](./ENGINEERING_EVIDENCE.md) for the current evidence inventory and [`DEVELOPMENT.md`](./DEVELOPMENT.md) for reproducible local commands.
 
 ## Open-source governance
 
@@ -157,6 +166,6 @@ The remaining Activity-level Volley/JSON transport is documented as part of the 
 
 ## Resumen en español
 
-Aplicación Android nativa en **Kotlin** con flujo de registro/consulta/salida de vehículos, configuración de API por entorno, política de red diferenciada entre debug y release, cálculo de tarifa extraído a Kotlin puro, validación separada para ingreso/salida y quality gate Android mediante GitHub Actions. La documentación distingue claramente el código implementado de capacidades que no existen en el repositorio.
+Aplicación Android nativa en **Kotlin** con flujo de registro/consulta/salida de vehículos, configuración de API por entorno, política de red diferenciada entre debug y release, cálculo de tarifa extraído a Kotlin puro y validación separada para ingreso/salida. GitHub Actions ejecutó correctamente `testDebugUnitTest`, `assembleDebug` y `lintDebug`; actualmente hay 14 métodos de prueba unitarios versionados. La documentación distingue claramente el código implementado de capacidades que no existen en el repositorio.
 
 For broader engineering work, see my [GitHub profile](https://github.com/JavierQuinan).
