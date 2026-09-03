@@ -1,229 +1,213 @@
-# Parking Android — Open Source Modernization Roadmap
+# Parking Android — Product & Engineering Roadmap
 
-This roadmap turns the existing Kotlin prototype into a professional, maintainable and openly auditable Android project. Every phase has an evidence gate; no phase is marked complete until the corresponding source/tests/CI exist.
+This roadmap preserves the long-term product and engineering vision of Parking Android **without presenting planned capabilities as implemented evidence**.
 
-## Phase 0 — Open-source baseline and repository hygiene
+## Status legend
 
-**Goal:** establish a trustworthy public baseline without changing product behavior.
+- ✅ **Implemented and evidenced** — source exists in the repository and is covered by the current documentation/quality gate where applicable.
+- 🔄 **Active engineering direction** — a logical next step for the current codebase, but not a completed capability.
+- 🧭 **Strategic evolution** — a possible future capability or architecture direction; it is not a delivery commitment and must not be presented as current functionality.
 
-- [x] Reclassify repository as active open-source revival
-- [x] Publish modernization roadmap
-- [x] Add Apache-2.0 license
-- [x] Add contribution policy
-- [x] Remove tracked IDE-only metadata (`.idea/`)
-- [x] Harden `.gitignore`
-- [x] Align Gradle root project identity to `ParkingAndroid`
-- [x] Add `SECURITY.md`
-- [x] Add Code of Conduct
-- [x] Add issue/PR templates
-- [x] Add Dependabot strategy
-- [x] Document baseline build requirements
-- [x] Establish first GitHub Actions workflow (`lintDebug + testDebugUnitTest + assembleDebug`)
-- [x] Verify first green CI run
-
-**Exit gate:** complete — clean repository + reproducible local build + first green CI run verified.
+The source of truth for current capabilities is [`README.md`](./README.md) plus [`ENGINEERING_EVIDENCE.md`](./ENGINEERING_EVIDENCE.md).
 
 ---
 
-## Phase 1 — Identity, configuration and network security
+## 1. Current verified baseline
 
-**Goal:** remove prototype-only technical assumptions.
+### Repository and Android foundation
 
-- [x] Rename namespace/applicationId from `com.example.parcial` to `io.github.javierquinan.parking`
-- [x] Rename generic Activities/features using domain terminology
-- [x] Remove hardcoded `http://10.0.2.2/Parcial/auto.php` from application code
-- [x] Introduce environment-aware API base URL configuration
-- [x] Disable broad cleartext traffic
-- [x] Add Android Network Security Configuration only for explicit development cases
-- [ ] Define typed API request/response models
-- [ ] Centralize errors and API result handling
-- [ ] Add input validation for plate, dates and times
-- [x] Document local/demo backend strategy
+- ✅ Native Android application in Kotlin.
+- ✅ Android SDK 34 with `minSdk 24` and `targetSdk 34`.
+- ✅ Professional namespace/application ID: `io.github.javierquinan.parking`.
+- ✅ Gradle Wrapper and reproducible JDK 17 CI baseline.
+- ✅ Apache-2.0 license, CONTRIBUTING, SECURITY, Code of Conduct, issue/PR templates and Dependabot configuration.
 
-**Exit gate:** pending typed contracts, centralized error handling and input validation. Identity/configuration/network boundary is implemented and must remain CI-verified.
+### Current parking workflow
 
----
+- ✅ Vehicle / parking-record creation.
+- ✅ Parking-record listing and lookup.
+- ✅ Record detail retrieval.
+- ✅ Checkout/update flow.
+- ✅ Entry/exit time handling.
+- ✅ Fee summary after successful checkout response.
+- ✅ Legacy Volley/JSONObject transport documented explicitly.
 
-## Phase 2 — Kotlin architecture modernization
+### Security and configuration
 
-**Goal:** make the project credible native-Android engineering evidence.
+- ✅ API base URL configured outside Activities through `BuildConfig`.
+- ✅ Gradle/environment configuration boundary for `PARKING_API_BASE_URL`.
+- ✅ Release builds have no default backend URL.
+- ✅ Broad cleartext networking disabled in the main manifest.
+- ✅ Debug HTTP exception restricted to emulator host `10.0.2.2`.
 
-Target structure:
+### Domain and quality evidence
 
-```text
-app/
-core/
-  network/
-  database/
-  common/
-feature/
-  parking/
-  vehicles/
-  rates/
-```
-
-- [ ] Introduce MVVM + use-case/domain boundaries
-- [ ] Move networking out of Activities
-- [ ] Repository interfaces in domain layer
-- [ ] Retrofit + OkHttp for typed HTTP APIs
-- [ ] Coroutines for asynchronous work
-- [ ] Flow / StateFlow for observable state
-- [ ] Hilt dependency injection
-- [ ] ViewModel-driven screen state
-- [ ] Define domain error/result model
-- [ ] Remove business logic from Android framework classes
-
-**Exit gate:** presentation layer does not know transport/database implementation details; core domain logic has unit tests.
+- ✅ Pure Kotlin `ParkingFeeCalculator`.
+- ✅ Pure Kotlin `ParkingRecordValidator`.
+- ✅ Separate validation for check-in and checkout.
+- ✅ Input normalization and validation for plate/year/date/time fields.
+- ✅ API endpoint unit-test source.
+- ✅ Parking fee and time-parsing unit-test source.
+- ✅ Parking-record validation unit-test source.
+- ✅ GitHub Actions executes `lintDebug`, `testDebugUnitTest` and `assembleDebug`.
 
 ---
 
-## Phase 3 — Modern UI / UX
+## 2. Engineering evolution — stronger Android architecture
 
-**Goal:** replace prototype UI with a consistent modern Android experience.
+These items describe how the current prototype could evolve into stronger native-Android engineering evidence.
 
-- [ ] Jetpack Compose
-- [ ] Material 3 design system
-- [ ] Navigation Compose
-- [ ] responsive layouts
-- [ ] loading / empty / error states
-- [ ] accessibility semantics and content descriptions
-- [ ] form validation and user feedback
-- [ ] light/dark theme
-- [ ] localization baseline: English + Spanish
-- [ ] screenshots/demo media for README
+### Application boundaries
 
-**Exit gate:** representative user journey can be demonstrated entirely through the modern UI.
+- 🔄 Move HTTP request construction and response parsing out of Activities.
+- 🔄 Introduce repository interfaces between presentation/domain/data concerns.
+- 🔄 Add a centralized typed result/error model for network and validation outcomes.
+- 🔄 Increase unit coverage around parking-session rules and transport mapping.
+- 🧭 ViewModel-driven screen state using Android lifecycle architecture components.
+- 🧭 Coroutines and Flow/StateFlow for asynchronous and observable state.
+- 🧭 Dependency injection where it produces a measurable maintainability benefit.
 
----
+### Transport/API modernization
 
-## Phase 4 — Offline-first data layer
+- 🔄 Define explicit request/response models for the existing backend contract.
+- 🔄 Document error envelopes and compatibility assumptions.
+- 🧭 Retrofit + OkHttp or an equivalent typed Android HTTP boundary.
+- 🧭 Versioned API contract / OpenAPI specification if a maintained backend is introduced.
+- 🧭 Idempotent check-in/check-out operations for retry-safe network behavior.
 
-**Goal:** make parking operations resilient to connectivity interruptions.
-
-- [ ] Room local persistence
-- [ ] remote/local source separation
-- [ ] synchronization strategy
-- [ ] conflict/error policy
-- [ ] DataStore for non-sensitive preferences
-- [ ] WorkManager for background synchronization
-- [ ] network connectivity awareness
-- [ ] cached parking/session history
-
-**Exit gate:** core operator flows remain usable offline and synchronize predictably when connectivity returns.
+The current repository does **not** claim Retrofit, OkHttp, OpenAPI or a production backend until the code actually exists.
 
 ---
 
-## Phase 5 — Parking domain evolution
+## 3. Parking-domain evolution
 
-**Goal:** evolve from CRUD prototype to a coherent parking domain.
+The strongest product direction is to evolve from a CRUD parking record client into a coherent parking-operations platform.
 
-- [ ] parking facilities / zones
-- [ ] parking spaces and availability
-- [ ] vehicle registry
-- [ ] check-in/check-out session lifecycle
-- [ ] rate plans and configurable pricing rules
-- [ ] reliable duration calculation across date boundaries
-- [ ] receipts and history
-- [ ] reservation lifecycle
-- [ ] QR ticket / validation flow
-- [ ] operator roles and permissions model
-- [ ] audit-friendly event history
+### Core operational domain
 
-**Exit gate:** domain model documented and unit-tested; no pricing logic remains embedded in UI code.
+- 🔄 Formal parking-session lifecycle: opened → active → checked out / cancelled.
+- 🔄 More explicit duration and pricing rules, including boundary cases.
+- 🔄 Synthetic fixtures for pricing/session tests.
+- 🧭 Parking facilities, zones and parking spaces.
+- 🧭 Availability state and occupancy tracking.
+- 🧭 Configurable rate plans and pricing policies.
+- 🧭 Receipts and transaction/session history.
+- 🧭 Reservation lifecycle.
+- 🧭 Operator roles and auditable operational events.
 
----
+### Pricing quality
 
-## Phase 6 — Location, notifications and platform capabilities
+The current implemented rule preserves the historical prototype behavior: complete elapsed hours × hourly rate.
 
-- [ ] map/location experience where business value exists
-- [ ] nearby parking discovery
-- [ ] permission-safe location handling
-- [ ] local/push notifications
-- [ ] check-out reminders
-- [ ] reservation notifications
-- [ ] deep links
-- [ ] optional camera/QR scanning
+Future pricing work could include:
 
-**Exit gate:** platform permissions follow least-privilege and graceful-denial behavior.
+- 🧭 grace periods;
+- 🧭 partial-hour rounding policies;
+- 🧭 day/night or zone-specific tariffs;
+- 🧭 daily caps;
+- 🧭 lost-ticket/manual-adjustment rules;
+- 🧭 overnight/multi-day sessions;
+- 🧭 tax/receipt integration where required by the target jurisdiction.
 
----
-
-## Phase 7 — Quality engineering
-
-- [ ] unit tests for domain/use cases
-- [ ] repository/data tests
-- [ ] API contract tests where possible
-- [ ] ViewModel tests
-- [ ] Compose UI tests
-- [ ] Android instrumentation smoke tests
-- [ ] static analysis / lint
-- [ ] formatting gate
-- [ ] test fixtures and synthetic data
-- [ ] CI release/debug builds
-- [ ] coverage reporting used as signal, not vanity metric
-
-**Exit gate:** GitHub CI verifies every pull request with deterministic automated checks.
+None of those policies should be represented as implemented until backed by source and tests.
 
 ---
 
-## Phase 8 — Security and privacy hardening
+## 4. Modern Android UX
 
-- [ ] HTTPS-only production networking
-- [ ] no secrets in source or BuildConfig defaults
-- [ ] secure token/session storage if authentication is introduced
-- [ ] least-privilege permissions
-- [ ] dependency scanning
-- [ ] secret scanning
-- [x] security reporting policy
-- [ ] threat model for operator/user flows
-- [ ] privacy notes for location/vehicle identifiers
+The present XML/AppCompat interface remains valid historical/native Android evidence. A future modernization can be evaluated independently from the domain/data work.
 
-**Exit gate:** documented threat/security model + automated security checks + no known high-risk repository hygiene issue.
+- 🧭 Material 3 design system.
+- 🧭 Jetpack Compose for selected or all screens.
+- 🧭 Navigation architecture.
+- 🧭 explicit loading, empty, offline and error states.
+- 🧭 accessibility semantics/content descriptions.
+- 🧭 English + Spanish localization baseline.
+- 🧭 responsive layouts for different Android form factors.
+- 🧭 sanitized screenshots/demo media for portfolio review.
 
----
-
-## Phase 9 — Backend/API contract and interoperability
-
-The Android repository should remain usable independently, but a professional client requires a stable contract.
-
-- [ ] OpenAPI contract or equivalent API documentation
-- [ ] versioned endpoints
-- [ ] typed error envelope
-- [ ] authentication/authorization contract
-- [ ] idempotent check-in/check-out operations where needed
-- [ ] pagination/filtering contract
-- [ ] integration/demo environment
-
-A backend may be delivered in a separate repository to keep concerns clean.
+Compose is a potential evolution, not a current repository claim.
 
 ---
 
-## Phase 10 — Open-source release readiness
+## 5. Offline resilience
 
-- [ ] `CHANGELOG.md`
-- [ ] semantic/versioning strategy
-- [ ] signed/tagged release process where practical
-- [ ] contributor setup documentation
-- [ ] architecture documentation/ADRs
-- [ ] sample/demo data
-- [ ] automated release build
-- [ ] first public pre-release
-- [ ] issue labels and contribution backlog
+For parking operations, offline resilience can add real business value where connectivity is unreliable.
 
-**Target milestone:** `v0.1.0-alpha` only after CI, security baseline and representative end-to-end flow are verified.
+- 🧭 Room or equivalent local persistence.
+- 🧭 local/remote data-source separation.
+- 🧭 cached active parking sessions.
+- 🧭 deterministic synchronization policy.
+- 🧭 conflict and retry handling.
+- 🧭 connectivity-aware UI state.
+- 🧭 WorkManager for background synchronization where appropriate.
+- 🧭 DataStore for non-sensitive local preferences.
+
+An offline-first claim will only be added to the README after offline flows and synchronization behavior are implemented and tested.
 
 ---
 
-## Portfolio promotion gate
+## 6. Platform capabilities
 
-The repository becomes a **featured/pinned native Android project** only after all of the following are evidenced:
+Potential extensions that could make Parking Android a stronger real-world product:
 
-- architecture modernization complete enough to remove business/network logic from Activities
-- secure environment configuration
-- representative Kotlin unit tests
-- Android CI is green
-- modern UI flow is demonstrable
-- README contains reproducible build/run steps
-- license/contribution/security governance is complete
+- 🧭 QR ticket generation/scanning for check-in/check-out.
+- 🧭 local notifications for session/reservation events.
+- 🧭 camera integration only where the workflow requires it.
+- 🧭 map/location support for multi-facility discovery.
+- 🧭 deep links into active sessions or reservations.
+- 🧭 permission-safe behavior with graceful denial states.
 
-Until then the repository remains **active open-source revival**, which is a truthful and useful signal of engineering progression.
+Platform permissions should remain least-privilege and be introduced only with a defined business use case.
+
+---
+
+## 7. Quality engineering target
+
+The repository already has a CI baseline. A higher quality bar could include:
+
+- 🔄 expand pure Kotlin domain tests;
+- 🔄 test HTTP mapping/error handling once networking leaves Activities;
+- 🧭 ViewModel tests if ViewModels are introduced;
+- 🧭 deterministic UI/instrumentation smoke flows;
+- 🧭 screenshot/regression testing when UI stability warrants it;
+- 🧭 coverage reporting as an engineering signal, not a vanity percentage;
+- 🧭 release-build validation;
+- 🧭 dependency/security checks aligned with the actual stack.
+
+---
+
+## 8. Security and privacy target
+
+Current network configuration already separates debug cleartext behavior from release. Further maturity could include:
+
+- 🔄 verify that all real release endpoints are HTTPS-only;
+- 🔄 maintain secret-free source and BuildConfig defaults;
+- 🧭 explicit threat model for operator, vehicle and parking-session flows;
+- 🧭 secure token/session storage if authenticated APIs are introduced;
+- 🧭 privacy notes for vehicle identifiers and location data if those features are added;
+- 🧭 automated secret/dependency scanning appropriate to the repository.
+
+---
+
+## 9. Open-source and release maturity
+
+- 🔄 keep README, evidence inventory and roadmap synchronized with the source.
+- 🧭 architecture decision records for significant changes.
+- 🧭 CHANGELOG and versioning strategy once public releases are meaningful.
+- 🧭 synthetic/demo dataset and repeatable demo scenario.
+- 🧭 signed/tagged releases where practical.
+- 🧭 first public pre-release only after a representative flow is stable and reproducible.
+
+---
+
+## Portfolio rule
+
+The roadmap is intentionally ambitious because it records what the project **could become**. Recruiter-facing evidence remains limited to what is verifiably implemented.
+
+A future item moves from 🧭/🔄 to ✅ only when:
+
+1. its source is versioned;
+2. the documentation reflects the actual implementation;
+3. relevant tests or reproducible verification exist where appropriate; and
+4. CI remains green.

@@ -1,7 +1,6 @@
 package io.github.javierquinan.parking
 
 import android.content.Intent
-import android.os.Build
 import android.os.Bundle
 import android.util.Log
 import android.widget.ArrayAdapter
@@ -9,18 +8,15 @@ import android.widget.Button
 import android.widget.EditText
 import android.widget.ListView
 import android.widget.Toast
-import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
 import com.android.volley.Request
 import com.android.volley.toolbox.JsonObjectRequest
 import com.android.volley.toolbox.Volley
 import io.github.javierquinan.parking.core.network.ApiConfig
+import io.github.javierquinan.parking.domain.ParkingFeeCalculator
+import io.github.javierquinan.parking.domain.ParkingRecordValidator
 import org.json.JSONException
 import org.json.JSONObject
-import java.text.SimpleDateFormat
-import java.time.LocalTime
-import java.time.temporal.ChronoUnit
-import java.util.Locale
 
 class ParkingManagementActivity : AppCompatActivity() {
     private val recordCodes = ArrayList<String>()
@@ -34,7 +30,6 @@ class ParkingManagementActivity : AppCompatActivity() {
     private lateinit var exitTimeInput: EditText
     private lateinit var recordCodeInput: EditText
 
-    @RequiresApi(Build.VERSION_CODES.O)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_parking_management)
@@ -60,15 +55,7 @@ class ParkingManagementActivity : AppCompatActivity() {
         }
 
         findViewById<Button>(R.id.btn_ingresar).setOnClickListener {
-            insertRecord(
-                plate = plateInput.text.toString(),
-                model = modelInput.text.toString(),
-                year = yearInput.text.toString(),
-                color = colorInput.text.toString(),
-                date = dateInput.text.toString(),
-                entryTime = entryTimeInput.text.toString(),
-                exitTime = exitTimeInput.text.toString()
-            )
+            insertRecord(currentInput())
         }
 
         findViewById<Button>(R.id.btn_modificar).setOnClickListener {
@@ -76,25 +63,32 @@ class ParkingManagementActivity : AppCompatActivity() {
         }
     }
 
-    private fun insertRecord(
-        plate: String,
-        model: String,
-        year: String,
-        color: String,
-        date: String,
-        entryTime: String,
-        exitTime: String
-    ) {
+    private fun currentInput() = ParkingRecordValidator.Input(
+        plate = plateInput.text.toString(),
+        model = modelInput.text.toString(),
+        year = yearInput.text.toString(),
+        color = colorInput.text.toString(),
+        date = dateInput.text.toString(),
+        entryTime = entryTimeInput.text.toString(),
+        exitTime = exitTimeInput.text.toString()
+    )
+
+    private fun insertRecord(input: ParkingRecordValidator.Input) {
+        val validated = ParkingRecordValidator.validateForCreate(input).getOrElse { error ->
+            showValidationError(error)
+            return
+        }
+
         val url = apiEndpointOrNotify() ?: return
         val payload = JSONObject().apply {
             put("accion", "Insertar")
-            put("placa", plate)
-            put("modelo", model)
-            put("anio", year)
-            put("color", color)
-            put("fecha", date)
-            put("entrada", entryTime)
-            put("salida", exitTime)
+            put("placa", validated.plate)
+            put("modelo", validated.model)
+            put("anio", validated.year)
+            put("color", validated.color)
+            put("fecha", validated.date)
+            put("entrada", validated.entryTime)
+            put("salida", validated.exitTime)
         }
 
         val requestQueue = Volley.newRequestQueue(this)
@@ -215,33 +209,41 @@ class ParkingManagementActivity : AppCompatActivity() {
         requestQueue.add(request)
     }
 
-    @RequiresApi(Build.VERSION_CODES.O)
     private fun updateRecord() {
-        val plate = plateInput.text.toString()
-        val model = modelInput.text.toString()
-        val year = yearInput.text.toString()
-        val color = colorInput.text.toString()
-        val date = dateInput.text.toString()
-        val entryTime = entryTimeInput.text.toString()
-        val exitTime = exitTimeInput.text.toString()
-        val code = recordCodeInput.text.toString()
+        val code = recordCodeInput.text.toString().trim()
+        if (code.isEmpty()) {
+            Toast.makeText(this, "Seleccione un registro antes de marcar la salida.", Toast.LENGTH_LONG).show()
+            return
+        }
 
-        val parsedEntryTime = parseTime(entryTime)
-        val parsedExitTime = parseTime(exitTime)
-        val totalFee = calculateTotalFee(parsedEntryTime, parsedExitTime, HOURLY_RATE)
+        val validated = ParkingRecordValidator.validateForCheckout(currentInput()).getOrElse { error ->
+            showValidationError(error)
+            return
+        }
+
+        val fee = runCatching {
+            ParkingFeeCalculator.calculate(
+                entryTime = validated.entryTime,
+                exitTime = validated.exitTime,
+                hourlyRate = HOURLY_RATE
+            )
+        }.getOrElse { error ->
+            showValidationError(error)
+            return
+        }
 
         val url = apiEndpointOrNotify() ?: return
         val payload = JSONObject().apply {
             put("accion", "Actualizar")
-            put("placa", plate)
-            put("modelo", model)
-            put("anio", year)
-            put("color", color)
-            put("fecha", date)
-            put("entrada", entryTime)
-            put("salida", exitTime)
+            put("placa", validated.plate)
+            put("modelo", validated.model)
+            put("anio", validated.year)
+            put("color", validated.color)
+            put("fecha", validated.date)
+            put("entrada", validated.entryTime)
+            put("salida", validated.exitTime)
             put("codigo", code)
-            put("tarifa_total", totalFee)
+            put("tarifa_total", fee.totalFee)
             put("estado", 0)
         }
 
@@ -257,6 +259,11 @@ class ParkingManagementActivity : AppCompatActivity() {
                         response.getString("mensaje"),
                         Toast.LENGTH_SHORT
                     ).show()
+
+                    startActivity(
+                        Intent(this, FeeSummaryActivity::class.java)
+                            .putExtra(EXTRA_TOTAL_FEE, fee.totalFee)
+                    )
                 } catch (exception: JSONException) {
                     Toast.makeText(applicationContext, exception.toString(), Toast.LENGTH_SHORT).show()
                 }
@@ -266,34 +273,14 @@ class ParkingManagementActivity : AppCompatActivity() {
             }
         )
         requestQueue.add(request)
-
-        startActivity(
-            Intent(this, FeeSummaryActivity::class.java)
-                .putExtra(EXTRA_TOTAL_FEE, totalFee)
-        )
     }
 
-    @RequiresApi(Build.VERSION_CODES.O)
-    private fun calculateTotalFee(
-        entryTime: LocalTime,
-        exitTime: LocalTime,
-        hourlyRate: Double
-    ): Double {
-        val elapsedHours = ChronoUnit.HOURS.between(entryTime, exitTime)
-        return elapsedHours * hourlyRate
-    }
-
-    @RequiresApi(Build.VERSION_CODES.O)
-    private fun parseTime(value: String): LocalTime {
-        val normalized = if (value.endsWith("AM") || value.endsWith("PM")) {
-            val twelveHourFormat = SimpleDateFormat("hh:mm a", Locale.getDefault())
-            val twentyFourHourFormat = SimpleDateFormat("HH:mm", Locale.getDefault())
-            twentyFourHourFormat.format(twelveHourFormat.parse(value))
-        } else {
-            value
-        }
-
-        return LocalTime.parse(normalized)
+    private fun showValidationError(error: Throwable) {
+        Toast.makeText(
+            this,
+            error.message ?: "Datos de parqueo inválidos.",
+            Toast.LENGTH_LONG
+        ).show()
     }
 
     private fun apiEndpointOrNotify(): String? {
