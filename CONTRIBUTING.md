@@ -2,48 +2,46 @@
 
 Thanks for your interest in improving Parking Android.
 
-This repository is currently in an **open-source revival** phase. Contributions are welcome, but changes should preserve the evidence-first and security-first direction of the project.
+Contributions should preserve the repository's evidence-first and security-first approach: public claims must describe implemented source, observed checks or documented current behavior.
 
 ## Before contributing
 
-1. Read [`README.md`](./README.md), [`ROADMAP.md`](./ROADMAP.md) and [`DEVELOPMENT.md`](./DEVELOPMENT.md).
-2. Check whether the proposed change belongs to the current modernization phase.
-3. Avoid bundling unrelated refactors and product features in the same pull request.
+1. Read [`README.md`](./README.md), [`ENGINEERING_EVIDENCE.md`](./ENGINEERING_EVIDENCE.md) and [`DEVELOPMENT.md`](./DEVELOPMENT.md).
+2. Keep pull requests focused on one concrete problem or engineering improvement.
+3. Avoid bundling unrelated refactors and product changes.
 4. Never commit production credentials, API keys, signing material, personal data, customer data or private backend URLs.
-5. Run the local verification command documented in `DEVELOPMENT.md` before opening a pull request when the change affects buildable Android code.
+5. Run the local verification command documented in `DEVELOPMENT.md` when the change affects buildable Android code.
 
-## Development principles
+## Engineering principles
 
 - Kotlin-first native Android engineering
-- clear separation between presentation, domain and data layers
-- no business logic in Activities/Composables when it belongs in domain/use-case code
-- HTTPS-first networking
-- dependency injection instead of hidden global dependencies
-- deterministic tests where practical
-- explicit error states
-- English-first technical naming and documentation, with Spanish documentation encouraged for user-facing material
+- business rules extracted from Android framework classes where practical
+- explicit environment/network configuration
+- HTTPS-first release posture
+- deterministic unit tests for pure Kotlin logic
+- clear error and validation boundaries
+- synthetic/demo data in public evidence
+- accurate claims instead of production-readiness language without proof
 
 ## Pull requests
 
-A good pull request should include:
+A pull request should include:
 
-- a focused problem statement
-- the implementation approach
-- tests for changed behavior when applicable
-- screenshots for UI changes using only synthetic/demo data
-- migration/compatibility notes for architectural changes
-- no unsupported claims such as “production-ready” unless the repository evidence supports them
-- the actual verification performed; do not mark checks as passing if they were not run
+- the problem being corrected;
+- the implementation approach;
+- tests for changed behavior where applicable;
+- screenshots for UI changes only when they use synthetic/demo data;
+- compatibility notes when changing the legacy JSON/backend contract;
+- the actual verification performed.
 
-## Commit scope examples
+Current commit-scope examples:
 
 ```text
-feat(parking): add check-in use case
-refactor(network): introduce typed API client
-fix(rates): handle overnight parking sessions
-test(domain): cover hourly-rate calculation
-docs: document local development environment
-chore(ci): add Android build quality gate
+refactor(domain): extract parking fee calculation
+fix(validation): reject malformed checkout data
+test(domain): cover parking input rules
+docs: document current backend contract
+chore(ci): harden Android verification workflow
 ```
 
 ## Security issues
