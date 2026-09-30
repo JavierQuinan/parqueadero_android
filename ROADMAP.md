@@ -17,7 +17,7 @@ The source of truth for current capabilities is [`README.md`](./README.md) plus 
 ### Repository and Android foundation
 
 - ✅ Native Android application in Kotlin.
-- ✅ Android SDK 34 with `minSdk 24` and `targetSdk 34`.
+- ✅ Android compile SDK 36 with `minSdk 24` and `targetSdk 34`.
 - ✅ Professional namespace/application ID: `io.github.javierquinan.parking`.
 - ✅ Gradle Wrapper and reproducible JDK 17 CI baseline.
 - ✅ Apache-2.0 license, CONTRIBUTING, SECURITY, Code of Conduct, issue/PR templates and Dependabot configuration.

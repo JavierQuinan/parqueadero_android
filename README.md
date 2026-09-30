@@ -20,7 +20,7 @@ The Android client currently supports the legacy parking workflow evidenced by i
 ## Verified stack
 
 - Kotlin / native Android
-- Android SDK 34 (`minSdk 24`, `targetSdk 34`)
+- Android compile SDK 36 (`minSdk 24`, `targetSdk 34`)
 - AndroidX / AppCompat
 - Material Components
 - ConstraintLayout
@@ -28,8 +28,8 @@ The Android client currently supports the legacy parking workflow evidenced by i
 - JUnit 4
 - Espresso dependency / instrumentation baseline
 - Gradle Kotlin DSL
-- Gradle Wrapper 8.2
-- Android Gradle Plugin 8.2.2
+- Gradle Wrapper 8.13
+- Android Gradle Plugin 8.11.1
 - JDK 17 CI baseline
 - namespace/application ID `io.github.javierquinan.parking`
 

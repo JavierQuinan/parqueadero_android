@@ -4,7 +4,7 @@ This document records only engineering evidence that exists in the repository to
 
 ## Native Android baseline
 
-- Kotlin / Android SDK 34
+- Kotlin / Android compile SDK 36
 - `minSdk 24`, `targetSdk 34`
 - Gradle Kotlin DSL
 - AndroidX / AppCompat / Material Components
