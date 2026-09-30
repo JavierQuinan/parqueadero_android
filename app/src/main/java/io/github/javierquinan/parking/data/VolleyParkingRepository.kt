@@ -11,33 +11,20 @@ class VolleyParkingRepository(context: Context) : ParkingRepository {
     private val queue = Volley.newRequestQueue(context.applicationContext)
 
     override fun create(input: ParkingRecordInput, callback: (ParkingResult<String>) -> Unit) {
-        request(payload("Insertar", input)) { response ->
-            callback(messageResult(response))
+        request(ParkingJsonContract.createPayload(input)) { response ->
+            callback(ParkingJsonContract.messageResult(response))
         }
     }
 
     override fun list(callback: (ParkingResult<List<ParkingRecord>>) -> Unit) {
-        request(JSONObject().put("accion", "consultar")) { response ->
-            runCatching {
-                if (!response.getBoolean("estado")) error(response.optString("mensaje", "No fue posible consultar los registros."))
-                val rows = response.getJSONArray("autos")
-                List(rows.length()) { index -> rows.getJSONObject(index).toRecord() }
-            }.fold(
-                onSuccess = { callback(ParkingResult.Success(it)) },
-                onFailure = { callback(ParkingResult.Failure(it.message ?: "Respuesta inválida.", it)) }
-            )
+        request(ParkingJsonContract.listPayload()) { response ->
+            callback(ParkingJsonContract.listResult(response))
         }
     }
 
     override fun get(code: String, callback: (ParkingResult<ParkingRecord>) -> Unit) {
-        request(JSONObject().put("accion", "Datos").put("codigo", code)) { response ->
-            runCatching {
-                if (!response.getBoolean("estado")) error(response.optString("mensaje", "Registro no encontrado."))
-                response.getJSONArray("auto").getJSONObject(0).toRecord()
-            }.fold(
-                onSuccess = { callback(ParkingResult.Success(it)) },
-                onFailure = { callback(ParkingResult.Failure(it.message ?: "Respuesta inválida.", it)) }
-            )
+        request(ParkingJsonContract.detailPayload(code)) { response ->
+            callback(ParkingJsonContract.detailResult(response))
         }
     }
 
@@ -47,11 +34,9 @@ class VolleyParkingRepository(context: Context) : ParkingRepository {
         totalFee: Double,
         callback: (ParkingResult<String>) -> Unit
     ) {
-        val body = payload("Actualizar", input)
-            .put("codigo", code)
-            .put("tarifa_total", totalFee)
-            .put("estado", 0)
-        request(body) { response -> callback(messageResult(response)) }
+        request(ParkingJsonContract.checkoutPayload(code, input, totalFee)) { response ->
+            callback(ParkingJsonContract.messageResult(response))
+        }
     }
 
     private fun request(body: JSONObject, onResponse: (JSONObject) -> Unit) {
@@ -77,37 +62,4 @@ class VolleyParkingRepository(context: Context) : ParkingRepository {
         )
     }
 
-    private fun payload(action: String, input: ParkingRecordInput) = JSONObject()
-        .put("accion", action)
-        .put("placa", input.plate)
-        .put("modelo", input.model)
-        .put("anio", input.year)
-        .put("color", input.color)
-        .put("fecha", input.date)
-        .put("entrada", input.entryTime)
-        .put("salida", input.exitTime)
-
-    private fun messageResult(response: JSONObject): ParkingResult<String> {
-        val success = response.optBoolean("estado", false)
-        val message = response.optString(
-            "mensaje",
-            if (success) "Operación completada." else "Respuesta inválida o fallida del servidor."
-        )
-        return if (success) {
-            ParkingResult.Success(message)
-        } else {
-            ParkingResult.Failure(message)
-        }
-    }
-
-    private fun JSONObject.toRecord() = ParkingRecord(
-        code = getString("codigo"),
-        plate = getString("placa"),
-        model = getString("modelo"),
-        year = optString("anio"),
-        color = optString("color"),
-        date = getString("fecha"),
-        entryTime = getString("entrada"),
-        exitTime = optString("salida")
-    )
 }
