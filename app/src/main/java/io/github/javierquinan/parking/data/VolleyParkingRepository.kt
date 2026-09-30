@@ -88,8 +88,12 @@ class VolleyParkingRepository(context: Context) : ParkingRepository {
         .put("salida", input.exitTime)
 
     private fun messageResult(response: JSONObject): ParkingResult<String> {
-        val message = response.optString("mensaje", "Operación completada.")
-        return if (response.optBoolean("estado", true)) {
+        val success = response.optBoolean("estado", false)
+        val message = response.optString(
+            "mensaje",
+            if (success) "Operación completada." else "Respuesta inválida o fallida del servidor."
+        )
+        return if (success) {
             ParkingResult.Success(message)
         } else {
             ParkingResult.Failure(message)
