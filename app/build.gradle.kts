@@ -60,7 +60,7 @@ dependencies {
     implementation("androidx.core:core-ktx:1.12.0")
     implementation("androidx.appcompat:appcompat:1.8.0")
     implementation("com.google.android.material:material:1.14.0")
-    implementation("androidx.constraintlayout:constraintlayout:2.1.4")
+    implementation("androidx.constraintlayout:constraintlayout:2.2.2")
     implementation("com.android.volley:volley:1.2.1")
     implementation("androidx.activity:activity:1.9.3")
     testImplementation("junit:junit:4.13.2")
